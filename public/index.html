@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+  <!-- Individual style CSS -->
+  <link rel="stylesheet" href="/public/main.css">
+  <!-- Bootstrap Datasheets -->
+  <link rel="tablesheets" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css">
+  <!-- Angular -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+  <!-- Plotly.js -->
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <!-- jquery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gijgo@1.9.10/js/gijgo.min.js" type="text/javascript"></script>
+  <link href="https://cdn.jsdelivr.net/npm/gijgo@1.9.10/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+  <title>DogDrive Interface</title>
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="col-md-12" style="background-color: #335; padding: 20px;">
+    <div class="row">
+    <h5 class="text-white">DogDrive Interface</h5>
+    </div>
+      <div class="col-md-12">
+        <div class="row">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    updateGraph(formatDate(today));
+    function updateGraph(date) {
+      x = [];
+      y = [];
+      document.getElementById("div1loader").style.display = "block";
+      // find the data for the chart
+      $.get("/dailydata/" + date, function(data) {
+        var dataParse = JSON.parse(data);
+        var dailyData = dataParse.dailyCumData;
+        for (i = 0; i < Object.keys(dailyData).length; i++) {
+          x.push(dailyData[i].timeslice);
+          y.push(dailyData[i].nrOfBonds);
+        };
+        console.log(dailyData)
+        // Graph 1
+        var trace1 = {
+          x,
+          y,
+          type: 'scatter'
+        };
+        var data1 = [trace1];
+        var layout1 = {
+          title: 'XXX - XXX',
+          xaxis: {
+            title: 'XXXX',
+            range: [date + ' 06:00', date + ' 22:00'],
+            type: 'date'
+          },
+          yaxis: {
+            title: 'XXX',
+            range: ['0', '7000']
+          },
+          shapes: [
+            {
+              type: 'line',
+              x0: date + ' 06:00',
+              y0: 0,
+              x1: date + ' 22:00',
+              y1: dailyBondTarget,
+              line: {
+                color: 'rgb(50, 171, 96)',
+                width: 1,
+                dash: 'dashdot'
+              },
+            }
+          ]
+        };
+        document.getElementById("div1loader").style.display = "none";
+        Plotly.newPlot('div1', data1, layout1);
+      });
+    }
+  </script>
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
+  <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js">
+  </script>
+  <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js">
+  </script>
+</body>
+</html>
