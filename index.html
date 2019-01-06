@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+  <!-- Individual style CSS -->
+  <!-- <link rel="stylesheet" href="/public/main.css"> -->
+  <!-- Bootstrap Datasheets -->
+  <link rel="tablesheets" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css">
+  <!-- Angular -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+  <!-- Plotly.js -->
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <!-- jquery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gijgo@1.9.10/js/gijgo.min.js" type="text/javascript"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/gijgo@1.9.10/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+  <title align="center"> DogDrive Interface</title>
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="col-md-12" style="background-color: #335; padding: 20px;">
+    <div class="row">
+    <h5 class="text-white">DogDrive Interface</h5>
+    </div>
+      <div class="col-md-12">
+        <div class="row">
+          </div>
+		     </div>
+      </div>
+	  <div id="dogdriveInterface">
+	  <h2>Click here to access to Dogdrive live: </h2>
+	  <button type="button" onclick="loadDoc('https://raw.githubusercontent.com/AMaji1/testcsv/master/Newdata_latest.csv', myFunction)">Go Online
+	  </div> 
+	  
+	  <div id="VoltagePlot">
+	  </div>
+	   <div id="CurrentPlot">
+	  </div>
+	  <div id="FluxPlot">
+	  </div>
+	  <div id="TorqueSpeed">
+	  </div>
+</button>
+       
+    </div>
+  </div>
+  <script>
+function loadDoc(url, cFunction) {
+  var xhttp;
+  xhttp=new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      cFunction(this);
+    }
+  };
+  xhttp.open("GET", url, true);
+  xhttp.send();
+}
+
+function myFunction(xhttp) {
+ 
+  showData(xhttp.responseText);
+  
+}
+    function showData(data) {
+        var rows = data.split(/\s+/);
+        var rowNum;
+        var cells;
+        var cellNum;
+		var Vatemp = [];
+		var Vbtemp = [];
+		var Iatemp = [];
+		var Ibtemp = [];
+		var fatemp = [];
+		var fbtemp = [];
+		var Ttemp = [];
+		var Stemp = [];
+		
+		var timetemp= [];
+		
+       
+                  
+					for (rowNum = 0; rowNum < rows.length; ++rowNum) {
+							cells = rows[rowNum].split(",");
+						    Vatemp[rowNum] =  cells[0];
+							Vbtemp[rowNum] =  cells[1];
+							Iatemp[rowNum] =  cells[2];
+							Ibtemp[rowNum] =  cells[3];
+							Ttemp[rowNum] = cells[4];
+							Stemp[rowNum] = cells[5];
+							fatemp[rowNum] = cells[6];
+							fbtemp[rowNum] = cells[7];
+						
+							}
+                         					 
+						 for (rowNum = 0; rowNum < rows.length; ++rowNum) {
+							cells = rows[rowNum].split(",");
+							
+						    timetemp[rowNum] = cells[8]	 ;
+						
+							}
+					 
+					var voltage_alpha = {x: timetemp, y: Vatemp , mode: 'lines' };
+					var voltage_beta = {x: timetemp, y: Vbtemp , mode: 'lines' };
+					var current_alpha = {x: timetemp, y: Iatemp , mode: 'lines' };
+					var current_beta = {x: timetemp, y: Ibtemp , mode: 'lines' };
+					var flux_alpha = {x: timetemp, y: fatemp , mode: 'lines' };
+					var flux_beta = {x: timetemp, y: fbtemp , mode: 'lines' };
+					var Torque = {x: timetemp, y: Ttemp , mode: 'lines' };
+					var Speed = {x: timetemp, y: Stemp , mode: 'lines' };
+
+		var voltageData = [voltage_alpha,voltage_beta];
+		var layoutV = {
+  title:'Alpha-Beta Voltage Plot'
+};
+var currentData = [current_alpha,current_beta];
+		var layoutI = {
+  title:'Alpha-Beta Current Plot'
+};
+var fluxData = [flux_alpha,flux_beta];
+		var layoutf = {
+  title:'Alpha-Beta Flux Plot'
+};
+
+var torquespeed = [Torque,Speed];
+		var layoutTS = {
+  title:'Torque and Speed Plot'
+};
+
+        Plotly.newPlot('VoltagePlot', voltageData, layoutV);
+		Plotly.newPlot('CurrentPlot', currentData, layoutI);
+		Plotly.newPlot('FluxPlot', fluxData, layoutf);
+		Plotly.newPlot('TorqueSpeed', torquespeed, layoutTS);
+          
+        }
+      
+
+      function display(msg) {
+        var p = document.createElement('p');
+        p.innerHTML = String(msg);
+        document.body.appendChild(p);
+      }
+  </script>
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
+  <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js">
+  </script>
+  <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js">
+  </script>
+</body>
+</html>
